@@ -3,11 +3,14 @@
 This repository contains a new build of ESP8266 AT Firmware with some special features.<br>
 The repository contains all necessary tools to build the firmware, _xtensa-lx106 toolchain_, _SDK_, _bootloader sources_... <br>
 Bash scripts for easy building and flashing are included.<br>
-All sourced are (hopefully) well documented, there should be no difficulties following the code and make same changes if needed.
+All sources are (hopefully) well documented, there should be no difficulties following the code and make same changes if needed.
 
 > Maximal size of the flash file for     512, no OTA firmware is 0x75000 (479232, 468KB) bytes<br>
 > Maximal size of the flash file for   512+512 firmware is 0x79000 (495616, 484KB) bytes<br>
 > Maximal size of the flash file for 1024+1024 firmware is 0xF0000 (983040, 960KB) bytes<br>
+
+_**New AT commands description and syntax will be added soon.**_
+
 
 ## Main features:
 
