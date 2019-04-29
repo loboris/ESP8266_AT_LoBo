@@ -3,7 +3,10 @@
 This repository contains a new build of ESP8266 AT Firmware with some special features.<br>
 The repository contains all necessary tools to build the firmware, _xtensa-lx106 toolchain_, _SDK_, _bootloader sources_... <br>
 Bash scripts for easy building and flashing are included.<br>
-All sources are (hopefully) well documented, there should be no difficulties following the code and make same changes if needed.
+All sources are (hopefully) well documented, there should be no difficulties following the code and make same changes if needed.<br>
+
+_There is no flash space to include both WPA Enterprise **and** SmartConfig into 512+512 Flash map._<br>
+_Only one of them can be compiled, if needed at all-_<br>
 
 > Maximal size of the flash file for     512, no OTA firmware is 0x75000 (479232, 468KB) bytes<br>
 > Maximal size of the flash file for   512+512 firmware is 0x79000 (495616, 484KB) bytes<br>
@@ -16,9 +19,9 @@ _**New AT commands description and syntax will be added soon.**_
 
 * Built with the latest ESP8266 NON_OS SDK (v. 3.1)
 * Can be installed on all ESP8266 supported SPI Flash sizes
-* OTA update from and server, with MD5 checksum support, SSL support, version check, ...
+* OTA update from any server, with MD5 checksum support, SSL support, version check, ...
   * Auto firmware partition select or forced update to any available partition
-  * OTA Bootloader Update is supported
+  * OTA **Bootloader** update is also supported
 * Load any available firmware version, not only the latest, is supported
 * Uses my own 2nd stage bootloader (full source available) for some special features
 * New AT commands added
