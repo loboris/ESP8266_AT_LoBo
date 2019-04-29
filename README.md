@@ -119,6 +119,7 @@ The firmware files are created in `bin/upgrade` directory
 The initial firmware must be flashed to the ESP8266.<br>
 Bash script `flash.sh` is provided to make the flashing as easy as possible.<br>
 The correct `flash.sh` options must be specified, depending on the Flash type used:<br>
+Change the working directory to `at_lobo` and run `flash.sh`:<br>
 
 Flash to ESP8285, 1MB, 512+512 map, in dout mode:
 ```

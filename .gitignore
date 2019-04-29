@@ -1,9 +1,6 @@
 # Compiled Sources
 ###################
 *.o
-*.a
-*.elf
-#*.bin
 *.map
 *.hex
 *.dis
