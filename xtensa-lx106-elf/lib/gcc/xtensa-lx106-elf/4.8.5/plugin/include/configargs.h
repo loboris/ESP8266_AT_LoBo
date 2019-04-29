@@ -1,0 +1,7 @@
+/* Generated automatically. */
+static const char configuration_arguments[] = "/builds/idf/crosstool-NG/.build/src/gcc-4.8.5/configure --build=x86_64-build_pc-linux-gnu --host=x86_64-build_pc-linux-gnu --target=xtensa-lx106-elf --prefix=/builds/idf/crosstool-NG/builds/xtensa-lx106-elf --with-local-prefix=/builds/idf/crosstool-NG/builds/xtensa-lx106-elf/xtensa-lx106-elf/sysroot --with-sysroot=/builds/idf/crosstool-NG/builds/xtensa-lx106-elf/xtensa-lx106-elf/sysroot --with-newlib --enable-threads=no --disable-shared --with-pkgversion='crosstool-NG crosstool-ng-1.22.0-88-gde0bdc1' --disable-__cxa_atexit --enable-cxx-flags='-fno-exceptions -fno-rtti' --with-gmp=/builds/idf/crosstool-NG/.build/xtensa-lx106-elf/buildtools --with-mpfr=/builds/idf/crosstool-NG/.build/xtensa-lx106-elf/buildtools --with-mpc=/builds/idf/crosstool-NG/.build/xtensa-lx106-elf/buildtools --with-isl=/builds/idf/crosstool-NG/.build/xtensa-lx106-elf/buildtools --with-cloog=/builds/idf/crosstool-NG/.build/xtensa-lx106-elf/buildtools --with-libelf=/builds/idf/crosstool-NG/.build/xtensa-lx106-elf/buildtools --enable-lto --enable-target-optspace --without-long-double-128 --disable-libgomp --disable-libmudflap --disable-libssp --disable-libquadmath --disable-libquadmath-support --disable-nls --disable-multilib --enable-languages=c,c++";
+static const char thread_model[] = "single";
+
+static const struct {
+  const char *name, *value;
+} configure_default_options[] = { { NULL, NULL} };

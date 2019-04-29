@@ -1,0 +1,35 @@
+# Compiled Sources
+###################
+*.o
+*.a
+*.elf
+#*.bin
+*.map
+*.hex
+*.dis
+#*.exe
+
+# Packages 
+############
+
+# Logs and Databases
+######################
+*.log
+
+# VIM Swap Files
+######################
+*.swp
+
+# Build directory
+######################
+build/*
+
+# Python cache files
+######################
+__pycache__/
+*.pyc
+
+
+test/
+
+backup.sh

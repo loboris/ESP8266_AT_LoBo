@@ -1,0 +1,58 @@
+//////////////////////////////////////////////////
+// rBoot open source boot loader for ESP8266.
+// Copyright 2015 Richard A Burton
+// richardaburton@gmail.com
+// See license.txt for license terms.
+//////////////////////////////////////////////////
+
+// plain sdk defaults to iram
+#ifndef IRAM_ATTR
+#define IRAM_ATTR
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "c_types.h"
+
+// ---- must be the same as in bootloader ----
+#define RTC_USER_ADDR           0x60001140
+/*
+ * Data at RTC_USER_ADDR (all data are uint32_t, 4 byte alligned):
+ * RTC_USER_ADDR + 0:   User requested partition to boot from, BOOT_FW_MAGIC + part_no
+ * RTC_USER_ADDR + 4:   Currently booted partition, BOOT_FW_MAGIC + part_no
+ * RTC_USER_ADDR + 8:   Currently booted partition SPI flash address, 0x1000, 0x81000, 0x101000, 0x181000, ...
+*/
+// -------------------------------------------
+
+
+extern void Cache_Read_Disable(void);
+extern void ets_printf(const char*, ...);
+extern void Cache_Read_Enable(uint32_t, uint32_t, uint32_t);
+
+uint8_t rBoot_mmap_1 = 0xff;
+uint8_t rBoot_mmap_2 = 0xff;
+
+// this function must remain in iram
+void IRAM_ATTR Cache_Read_Enable_New(void);
+void IRAM_ATTR Cache_Read_Enable_New(void) {
+
+    volatile uint32_t *rtc_fw_addr = (uint32_t*)RTC_USER_ADDR + 8;
+    if (rBoot_mmap_1 == 0xff) {
+        uint32_t val = *rtc_fw_addr;
+        val /= 0x100000;
+
+        rBoot_mmap_2 = val / 2;
+        rBoot_mmap_1 = val % 2;
+        
+        ets_printf("mmap %d,%d,1\r\n", rBoot_mmap_1, rBoot_mmap_2);
+    }
+
+    Cache_Read_Enable(rBoot_mmap_1, rBoot_mmap_2, 1);
+}
+
+#ifdef __cplusplus
+}
+#endif
+
