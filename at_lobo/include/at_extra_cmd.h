@@ -43,6 +43,7 @@ void at_testCmdSNTPTime(uint8_t id);
 void at_setupCmdTCPConnConnect(uint8_t id, char *pPara);
 void at_setupCmdTCPSend(uint8_t id, char *pPara);
 void at_setupCmdTCPClose(uint8_t id, char *pPara);
+void at_queryCmdTCP(uint8_t id);
 
 void at_setupCmdTCPSSLconfig(uint8_t id, char *pPara);
 void at_queryCmdTCPSSLconfig(uint8_t id);

@@ -12,7 +12,9 @@ _Only one of them can be compiled, if needed at all-_<br>
 > Maximal size of the flash file for   512+512 firmware is 0x79000 (495616, 484KB) bytes<br>
 > Maximal size of the flash file for 1024+1024 firmware is 0xF0000 (983040, 960KB) bytes<br>
 
-_**New AT commands description and syntax will be added soon.**_
+
+[Documentation for new and changed **AT Commands**](https://github.com/loboris/ESP8266_AT_LoBo/blob/master/at_lobo/README.md)
+
 
 
 ## Main features:

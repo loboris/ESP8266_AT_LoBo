@@ -214,19 +214,19 @@ static void ICACHE_FLASH_ATTR tcpconn_recvcb(void *arg, char *pusrdata, unsigned
     struct espconn *conn = (struct espconn *)arg;
     char info[32] = {'\0'};
     uint8_t ch = 0;
-    int tmo = TCP_DATA_TIMEOUT_MS/10;
+    int tmo = TCP_DATA_TIMEOUT_MS;
 
     for (tcp_n=0; tcp_n<TCPCONN_MAX_CONN; tcp_n++) {
         if (tcpconns[tcp_n]->conn == conn) break;
     }
 
-    // send the alert and the request prompt
-    os_sprintf(info, "\r\n+TCPD:%d,%d>", tcp_n, length);
+    // send the request prompt
+    os_sprintf(info, "\r\n+TCP,%d,%d:", tcp_n, length);
     at_port_print(info);
     // wait for request
     system_soft_wdt_stop();
     while (tmo > 0) {
-        os_delay_us(10000);
+        os_delay_us(1000);
         //ch = uart_rx_one_char_block(); // blocking
         //system_soft_wdt_feed();
         ch = 0;
@@ -235,7 +235,7 @@ static void ICACHE_FLASH_ATTR tcpconn_recvcb(void *arg, char *pusrdata, unsigned
         tmo--;
     }
     system_soft_wdt_restart();
-    if ((tmo == 0) || (ch == 'a')) {
+    if ((tmo == 0) || (ch == 'A')) {
         // timeout receiving confirmation or abort requested
         if ((tcpconns[tcp_n]) && (tcpconns[tcp_n]->connected)) {
             if (tcpconns[tcp_n]->ssl > 0) espconn_secure_disconnect(conn);
@@ -245,6 +245,17 @@ static void ICACHE_FLASH_ATTR tcpconn_recvcb(void *arg, char *pusrdata, unsigned
     else {
         uart0_tx_buffer(pusrdata, length);
     }
+
+    tmo = 1000;
+    system_soft_wdt_stop();
+    while (tmo > 0) {
+        os_delay_us(1000);
+        ch = 0;
+        uart_rx_one_char(&ch);
+        if ((ch == 'r') || (ch == 'A')) break;
+        tmo--;
+    }
+    system_soft_wdt_restart();
 }
 
 // Free memory used by tcpconn structure
@@ -270,7 +281,7 @@ static void ICACHE_FLASH_ATTR tcpconn_disconcb(void *arg)
 
     tcpconn_cleanup(tcp_n);
 
-    os_sprintf(info, "tcpCLOSE:%d\r\n", tcp_n);
+    os_sprintf(info, "%d,CLOSED\r\n", tcp_n);
     at_port_print(info);
 }
 
@@ -290,7 +301,7 @@ static void ICACHE_FLASH_ATTR tcpconn_recon_cb(void *arg, sint8 errType)
         at_response_error();
     }
     else {
-        os_sprintf(info, "tcpCLOSE:%d,%d\r\n", tcp_n, errType);
+        os_sprintf(info, "%d,CLOSED\r\n", tcp_n);
         at_port_print(info);
     }
     tcpconn_cleanup(tcp_n);
@@ -315,7 +326,7 @@ static void ICACHE_FLASH_ATTR tcpconn_connect_cb(void *arg)
     }
 
     tcpconns[tcp_n]->connected = 1;
-    os_sprintf(info, "tcpCONNECT:%d\r\n", tcp_n);
+    os_sprintf(info, "%d,CONNECT\r\n", tcp_n);
     at_port_print(info);
 
     at_leave_special_state();
@@ -630,9 +641,10 @@ void ICACHE_FLASH_ATTR at_setupCmdTCPSend(uint8_t id, char *pPara)
     tcp_input_len = len;
     tcp_input_conn_no = tcp_n;
 
+    at_port_print_irom_str(">");
+
     os_timer_setfn(&tcp_timer, (os_timer_func_t *)tcp_input_timeout, 0);
     os_timer_arm(&tcp_timer, TCP_INPUT_TIMEOUT_MS, 0);
-    at_port_print_irom_str("\r\n>");
 
     at_register_uart_rx_intr(user_uart_rx_intr);
 
@@ -641,6 +653,17 @@ void ICACHE_FLASH_ATTR at_setupCmdTCPSend(uint8_t id, char *pPara)
 
 exit_err:
     at_response_error();
+    return;
+}
+
+// AT+TCPCONNECT? or AT+TCPSEND? or AT+TCPCLOSE?
+// Used to confirm the TCP commands are implemented
+//===============================================
+void ICACHE_FLASH_ATTR at_queryCmdTCP(uint8_t id)
+{
+    at_port_print_irom_str("+TCPCOMMANDS:1\r\n");
+
+    at_response_ok();
     return;
 }
 

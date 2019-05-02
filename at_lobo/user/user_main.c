@@ -238,9 +238,9 @@ uint32 sdio_recv_data_callback(uint8* data,uint32 len)
 at_funcationType at_custom_cmd[] = {
     {"+SYSFLASHMAP",      12, NULL,               at_queryCmdFlashMap,     NULL,                      NULL},
     {"+SYSCPUFREQ",       11, NULL,               at_queryCmdSysCPUfreq,   at_setupCmdCPUfreq,        NULL},
-    {"+TCPSTART",          9, NULL,               NULL,                    at_setupCmdTCPConnConnect, NULL},
-    {"+TCPSEND",           8, NULL,               NULL,                    at_setupCmdTCPSend,        NULL},
-    {"+TCPCLOSE",          9, NULL,               NULL,                    at_setupCmdTCPClose,       NULL},
+    {"+TCPSTART",          9, NULL,               at_queryCmdTCP,          at_setupCmdTCPConnConnect, NULL},
+    {"+TCPSEND",           8, NULL,               at_queryCmdTCP,          at_setupCmdTCPSend,        NULL},
+    {"+TCPCLOSE",          9, NULL,               at_queryCmdTCP,          at_setupCmdTCPClose,       NULL},
     {"+SSLCCONF",          9, NULL,               at_queryCmdTCPSSLconfig, at_setupCmdTCPSSLconfig,   NULL},
     {"+SSLLOADCERT",      12, NULL,               at_queryCmdTCPLoadCert,  at_setupCmdTCPLoadCert,    NULL},
     {"+SNTPTIME",          9, at_testCmdSNTPTime, at_queryCmdSNTPTime,     NULL,                      NULL},

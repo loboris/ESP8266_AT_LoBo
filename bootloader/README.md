@@ -1,20 +1,67 @@
 # Open Source Bootloader for ESP8266
 
-This bootloader is part of bintechnology ESP8266 applications, and now it is open source.
+## Compile
 
-# Compile
+You can open this code with the Eclipse, or just run make to compile it.
 
-You can open this code with the Netbeans IDE, or just call make to compile it
+To compile run in this directory:<br>
 
-obs: you don't need the Espressif SDK to compile this project
+```
+.\build.sh
+```
 
-toolchain: xtensa-lx106-elf (GCC) 4.8.2
+## Output
 
-# Output
+The binary is generated in the "build" folder as "bootloader.bin".<br>
+The script generates OTA and NON-OTA binaries, version info file and MD% checksum files.<br>
+All generated files will be copyed to the `../bin` directory to be used by AT firmware.<br>
 
-The binary is generated in the "build" folder as "bootloader.bin"
+## Example
 
-# Description
+```
+./build.sh
+rm -R -f build/*
+xtensa-lx106-elf-gcc -std=c99 -Wall -O1 -mtext-section-literals -mlongcalls -nostdlib -fno-builtin -flto -Wl,-static -g -ffunction-sections -fdata-sections -Wl,--gc-sections -Isrc -L. -Tbootloader_linker.ld  -DNO_OTA_SUPPORT=1 -o build/output.elf src/main.c src/vector.S
+xtensa-lx106-elf-objcopy --only-section .text -O binary build/output.elf build/text.out
+xtensa-lx106-elf-objcopy --only-section .rodata -O binary build/output.elf build/rodata.out
+xtensa-lx106-elf-nm -g build/output.elf > build/output.sym
+xtensa-lx106-elf-objdump -a -f -h -D build/output.elf > build/output.dmp
+python gen_binary.py build/output.sym build/text.out build/rodata.out build/bootloader.bin
+==================================================================
+[.rodata 560 Bytes][.bss 8 Bytes]
+------------------------------------------------------------------
+[SRAM (.rodata): 568 Bytes][SRAM (.bss): 3528 Bytes]
+------------------------------------------------------------------
+[IRAM USED: 1680 Bytes][IRAM LIB: 14704 Bytes]
+==================================================================
+#@rm -f build/text.out
+#@rm -f build/rodata.out
+#@rm -f build/output.sym
+---------------------------------------
+-------- COMPILED successfully --------
+---------------------------------------
+OK, ver='1.2.0'
 
-When ESP8266 is powerup and the IOs are properly set to boot from external flash, the internal bootloader will check and load the the binary that is stored in the first block of the flash at address 0x00000, that is the place where you will store this bootloader. This bootloader as default will try to load the binary from flash at address 0x81000, or from 0x01000 if the first one fails. There is more details about the load binaries process...
-More details soon...
+rm -R -f build/*
+xtensa-lx106-elf-gcc -std=c99 -Wall -O1 -mtext-section-literals -mlongcalls -nostdlib -fno-builtin -flto -Wl,-static -g -ffunction-sections -fdata-sections -Wl,--gc-sections -Isrc -L. -Tbootloader_linker.ld  -DNO_OTA_SUPPORT=0 -o build/output.elf src/main.c src/vector.S
+xtensa-lx106-elf-objcopy --only-section .text -O binary build/output.elf build/text.out
+xtensa-lx106-elf-objcopy --only-section .rodata -O binary build/output.elf build/rodata.out
+xtensa-lx106-elf-nm -g build/output.elf > build/output.sym
+xtensa-lx106-elf-objdump -a -f -h -D build/output.elf > build/output.dmp
+python gen_binary.py build/output.sym build/text.out build/rodata.out build/bootloader.bin
+==================================================================
+[.rodata 992 Bytes][.bss 8 Bytes]
+------------------------------------------------------------------
+[SRAM (.rodata): 1000 Bytes][SRAM (.bss): 3096 Bytes]
+------------------------------------------------------------------
+[IRAM USED: 3056 Bytes][IRAM LIB: 13328 Bytes]
+==================================================================
+#@rm -f build/text.out
+#@rm -f build/rodata.out
+#@rm -f build/output.sym
+---------------------------------------
+-------- COMPILED successfully --------
+---------------------------------------
+OK, ver: '1.2.0', file size: 4080 bytes
+```
+

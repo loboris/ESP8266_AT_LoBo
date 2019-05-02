@@ -853,7 +853,7 @@ void ICACHE_FLASH_ATTR at_queryCmdFWupdate(uint8_t id)
 //====================================================
 void ICACHE_FLASH_ATTR at_testCmdFWupdate(uint8_t id)
 {
-    at_port_print_irom_str("+UPDATE:\"<remote_host>\",<reset_after>: 0|1,<force_part>: 0-7,<remote_port>: 1-65365,<ssl: 0|1\r\n");
+    at_port_print_irom_str("+UPDATE:\"<remote_host>\",<reset_after>: 0|1,<force_part>: 0-7,<remote_port>: 1-65365,<ssl>: 0|1\r\n");
     at_port_print_irom_str("+UPDATE:only the first parameter is mandatory\r\n");
     at_response_ok();
 }
