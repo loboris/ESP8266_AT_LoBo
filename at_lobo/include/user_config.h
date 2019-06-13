@@ -33,7 +33,7 @@
 #endif
 #endif
 
-#define ESP_AT_LOBO_VERSION     "ESP8266_AT_LoBo v1.2.4"
+#define ESP_AT_LOBO_VERSION     "ESP8266_AT_LoBo v1.3.0"
 
 // ---------------------------------------------------------------
 // This adds ~22.5 KB to free system RAM, should be always enabled

@@ -112,6 +112,7 @@ struct espconn {
     espconn_recv_callback recv_callback;
 	espconn_sent_callback sent_callback;
 	uint8 link_cnt;
+    uint8_t parrent;  // LoBo
 	void *reverse;
 };
 

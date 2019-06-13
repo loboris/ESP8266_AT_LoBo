@@ -23,6 +23,7 @@
 # Build directory
 ######################
 build/*
+.output/*
 
 # Python cache files
 ######################

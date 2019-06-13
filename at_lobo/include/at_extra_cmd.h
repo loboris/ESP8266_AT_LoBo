@@ -40,10 +40,15 @@ void at_setupCmdCPUfreq(uint8_t id, char *pPara);
 void at_queryCmdSNTPTime(uint8_t id);
 void at_testCmdSNTPTime(uint8_t id);
 
+void at_setupCmdTCPServer(uint8_t id, char *pPara);
+void at_queryCmdTCPServer(uint8_t id);
+
 void at_setupCmdTCPConnConnect(uint8_t id, char *pPara);
 void at_setupCmdTCPSend(uint8_t id, char *pPara);
 void at_setupCmdTCPClose(uint8_t id, char *pPara);
 void at_queryCmdTCP(uint8_t id);
+void at_queryCmdTCPStatus(uint8_t id);
+void ICACHE_FLASH_ATTR at_setupCmdTCPStatus(uint8_t id, char *pPara);
 
 void at_setupCmdTCPSSLconfig(uint8_t id, char *pPara);
 void at_queryCmdTCPSSLconfig(uint8_t id);

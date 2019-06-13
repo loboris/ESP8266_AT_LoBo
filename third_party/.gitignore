@@ -1,0 +1,9 @@
+# Compiled Sources
+###################
+*.o
+*.map
+*.hex
+*.dis
+*.d
+*.a
+#*.exe

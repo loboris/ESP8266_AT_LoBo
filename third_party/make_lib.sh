@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-export SDK_PATH=$(dirname $(pwd))
+export "PATH=${PWD}/../xtensa-lx106-elf/bin:$PATH"
+export SDK_PATH=${PWD}/..
+#export SDK_PATH=$(dirname $(pwd))
 
 echo "make_lib.sh version 20150924"
 echo ""

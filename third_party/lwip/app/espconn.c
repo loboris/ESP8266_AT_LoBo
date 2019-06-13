@@ -66,6 +66,7 @@ espconn_copy_partial(struct espconn *pesp_dest, struct espconn *pesp_source)
 	pesp_dest->sent_callback = pesp_source->sent_callback;
 	pesp_dest->link_cnt = pesp_source->link_cnt;
 	pesp_dest->reverse = pesp_source->reverse;
+	pesp_dest->parrent = pesp_source->parrent; // LoBo
 }
 
 /******************************************************************************

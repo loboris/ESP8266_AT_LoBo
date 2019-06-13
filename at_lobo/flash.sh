@@ -20,6 +20,7 @@ TEST_ONLY="no"
 ERASE_ONLY="no"
 ONLY_CRT="no"
 FLASH_BLANKS=""
+FW_FILE=""
 
 #----------------
 get_arguments() {
@@ -77,6 +78,11 @@ get_arguments() {
         --test)
         TEST_ONLY="yes"
         shift # past argument
+        ;;
+        -fw|--fwfile)
+        FW_FILE="$2"
+        shift # past argument
+        shift # past value
         ;;
         *)    # unknown option
         shift # past argument
@@ -216,6 +222,13 @@ fi
 
 if [ "${ONLY_FW}" == "yes" ] || [ "${ONLY_BOOT}" == "yes" ] || [ "${ONLY_CRT}" == "yes" ]; then
     ERASE_FLASH="no"
+fi
+
+if [ "${FW_FILE}" != "" ]; then
+    FLASH_APP=${FW_FILE}
+    FLASH_BLANKS=""
+    FLASH_DEF=""
+    FLASH_CRT=""
 fi
 
 echo
