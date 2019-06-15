@@ -164,15 +164,71 @@ After the data are processed by hosts, it sends the **`data processed confirmati
 
 1. The ESP8266 <-> host communication is as follows:<br>
 1. ESP8266 gets some data from remote server
-1. ESP8266 sends the information to the host in the format: **+TCP,link_number,data_length:**
-1. Host sends the `receive comfirmation`, one character '**R**'
+1. ESP8266 sends the information to the host in the format: **+TCP,link_id,srv_id,data_length:**
+1. Host sends the `receive comfirmation`, one character '**y**'
 1. ESP8266 sends `data_lengths` data bytes
 1. Host receives the data, process it and sends the `data processed confirmation`, one character '**r**'
 1. ESP8266 continues to wait for new data from remote server
+1. Instead of `receive comfirmation` (**y**), the host can also send `repeat request` '**c**' in which case ESP8266 sends the block again or `abort request` '**a**' in which case ESP8266 aborts the transmission and closes the remote connection
+1. Instead of `data processed confirmation` (**r**), the host can also send `abort request` '**a**' in which case ESP8266 aborts the transmission and closes the remote connection
 
-If the host sends the `abort request`, one character '**A**', ESP8266 aborts and closes the remote host connection.
+<br>
+All available commands **AT+TCPSTART**, **AT+TCPSEND** and **AT+TCPCLOSE** have the same syntax as the coresponding **AT+CIP...** commands in `AT+CIPMUX=1` mode, with the exception that only **"TCP"** and **"SSL"** connection types are allowed.<br>
 
-All available commands **AT+TCPSTART**, **AT+TCPSEND** and **AT+TCPCLOSE** have the same syntax as the coresponding **AT+CIP...** commands in `AT+CIPMUX=1` mode, with the exception that only **"TCP"** and **"SSL"** connection types are allowed.
+**AT+TCPSTART=** accepts one additional paramerer at the end: **local_port**. If given, the connection is established from that local port.<br>
+
+**AT+TCPSTART?**, **AT+TCPSEND?** or **AT+TCPCLOSE?** commands can be used to check if the TCP command are implemented. `+TCPCOMMANDS:1` is returned.<br>
+
+<br>
+
+
+## AT+TCPSERVER
+
+This command has the same function as the _AT+CIPSERVER_ with the exception that **multiple** TCP servers can be created.<br>
+
+When the new remote connection is accepted ESP8266 sends the message **srv_id,link_id,TCPconnect:IP_addr,port** (e.g. _1,3,TCPConnect:192.168.0.75,23638_)<br>
+
+_**Set**_<br>
+
+AT+TCPSERVER=<serv_id>,<mode>,[<port>],[<ssl>],[<maxconn>],[conn_timeout]
+
+_`srv_id`_  server id: 0 ~ 2 (up to 3 servers can be created)<br>
+_`mode`_ 1:  creates the server; 0: deletes the server
+_`port`  port number, 333 is the default
+_`ssl`_  1: use SSL; 0: do not use SSL (default)
+_`max_con`_  maximal number of the remote connection that can be accepted (0 ~ 4); default: 4
+_`timeout`_  remote connection timeout in seconds (1 ~ 7200); default: 120
+
+
+_**Query**_<br>
+
+AT+TCPSERVER?
+
+Report the TCPServer status:<br>
+
+```
++TCPSERVER:servers_num
++TCPSERVER:srv_id,conn_num,max_con,port,ssl,timeout
++TCPCLIENT:link_id,IP_addr,port
+```
+_+TCPSERVER:srv_id,..._ section is reported only if there are some opened servers <br>
+_+TCPCLIENT:_ section is reported only if there are some connected clients<br>
+
+
+## AT+TCPSTATUS
+
+**AT+TCPSTATUS** or **AT+TCPSTATUS?**
+
+Reports the status in the same format as the _AT+CIPSTATUS_.<br>
+
+**AT+TCPSTATUS=link_id**
+
+Reports the status for the single connection in the following format:<br>
+
+```
++TCPSTATUS:"remote_IP_addr",remote_port,srv_conn
+```
+
 
 ---
 

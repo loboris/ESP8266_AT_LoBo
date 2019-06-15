@@ -414,14 +414,6 @@ static void ICACHE_FLASH_ATTR tcpconn_connect_cb(void *arg)
 
         if (tcpconns[tcp_n]->keepalive) {
             espconn_set_keepalive(tcpconns[tcp_n]->conn, ESPCONN_KEEPIDLE, &tcpconns[tcp_n]->keepalive);
-            if (!tcpconns[tcp_n]->ssl) {
-                espconn_regist_time(tcpconns[tcp_n]->conn, (tcpconns[tcp_n]->keepalive < 3600) ? tcpconns[tcp_n]->keepalive*2 : 7200, 1);
-            }
-        }
-        else {
-            if (!tcpconns[tcp_n]->ssl) {
-                espconn_regist_time(tcpconns[tcp_n]->conn, 60, 1);
-            }
         }
 
         tcpconns[tcp_n]->connected = 1;
@@ -604,7 +596,7 @@ exit_err:
     return;
 }
 
-// new client connected to TCP Server
+// new client connected to the TCP Server
 //------------------------------------------------------------------
 static void ICACHE_FLASH_ATTR tcpserver_client_connect_cb(void *arg)
 {
@@ -624,6 +616,8 @@ static void ICACHE_FLASH_ATTR tcpserver_client_connect_cb(void *arg)
     }
     if (tcp_n >= TCPCONN_MAX_CONN) goto exit; // not found
 
+    if (tcpservers[srv_n]->connected >= tcpservers[srv_n]->maxconn) goto exit; // max number of connections reached
+
     // register new TCP connection to server
     // create tcpconn structure
     tcpconn_t *tcpconn = (tcpconn_t *)os_zalloc(sizeof(tcpconn_t));
@@ -640,11 +634,8 @@ static void ICACHE_FLASH_ATTR tcpserver_client_connect_cb(void *arg)
 
     tcpconns[tcp_n] = tcpconn;
 
+    // register connection callbacks
     _tcpconn_register_cb_cb(conn);
-
-    if (!tcpconn->ssl) {
-        if (tcpservers[srv_n]->timeout) espconn_regist_time(tcpconns[tcp_n]->conn, tcpservers[srv_n]->timeout, 1);
-    }
 
     tcpservers[srv_n]->connected++;
 
@@ -715,7 +706,7 @@ void ICACHE_FLASH_ATTR at_setupCmdTCPServer(uint8_t id, char *pPara)
         pPara++; // skip ','
         //get the optional 5th parameter (keepalive)
         flag = at_get_next_int_dec(&pPara, &maxconn, &err);
-        if (err != 0) ssl = 0;
+        if (err != 0) maxconn = TCPCONN_MAX_CONN;
         if ((maxconn < 1) || (maxconn > TCPCONN_MAX_CONN)) goto exit_err;
     }
     // check if the last parameter
@@ -723,7 +714,7 @@ void ICACHE_FLASH_ATTR at_setupCmdTCPServer(uint8_t id, char *pPara)
         pPara++; // skip ','
         //get the optional 6th parameter (timeout)
         flag = at_get_next_int_dec(&pPara, &tmo, &err);
-        if (err != 0) ssl = 0;
+        if (err != 0) tmo = TCPSERV_CONN_TIMEOUT;
         if ((tmo < 0) || (maxconn > 7200)) goto exit_err;
     }
     if (*pPara != '\r') goto exit_err;
@@ -766,7 +757,11 @@ void ICACHE_FLASH_ATTR at_setupCmdTCPServer(uint8_t id, char *pPara)
         espconn_tcp_set_max_con_allow(tcpservers[srv_n]->conn, maxconn);
         // Accept connections
         if (ssl) espconn_secure_accept(tcpservers[srv_n]->conn);
-        else espconn_accept(tcpservers[srv_n]->conn);
+        else {
+            espconn_accept(tcpservers[srv_n]->conn);
+            espconn_regist_time(tcpservers[srv_n]->conn, tmo, 1);
+
+        }
     }
     else if (enable == 0) {
         // === Delete the TCP Server ===
