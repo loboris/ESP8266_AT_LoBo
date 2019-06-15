@@ -169,10 +169,11 @@ After the data are processed by hosts, it sends the **`data processed confirmati
 1. ESP8266 sends `data_lengths` data bytes
 1. Host receives the data, process it and sends the `data processed confirmation`, one character '**r**'
 1. ESP8266 continues to wait for new data from remote server
-1. Instead of `receive comfirmation` (**y**), the host can also send `repeat request` '**c**' in which case ESP8266 sends the block again or `abort request` '**a**' in which case ESP8266 aborts the transmission and closes the remote connection
-1. Instead of `data processed confirmation` (**r**), the host can also send `abort request` '**a**' in which case ESP8266 aborts the transmission and closes the remote connection
 
-<br>
+Instead of `receive comfirmation` (**y**), the host can also send `repeat request` '**c**' in which case ESP8266 sends the block again or `abort request` '**a**' in which case ESP8266 aborts the transmission and closes the remote connection<br>
+Instead of `data processed confirmation` (**r**), the host can also send `abort request` '**a**' in which case ESP8266 aborts the transmission and closes the remote connection
+
+
 All available commands **AT+TCPSTART**, **AT+TCPSEND** and **AT+TCPCLOSE** have the same syntax as the coresponding **AT+CIP...** commands in `AT+CIPMUX=1` mode, with the exception that only **"TCP"** and **"SSL"** connection types are allowed.<br>
 
 **AT+TCPSTART=** accepts one additional paramerer at the end: **local_port**. If given, the connection is established from that local port.<br>
@@ -190,19 +191,19 @@ When the new remote connection is accepted ESP8266 sends the message **srv_id,li
 
 _**Set**_<br>
 
-AT+TCPSERVER=<serv_id>,<mode>,[<port>],[<ssl>],[<maxconn>],[conn_timeout]
+**`AT+TCPSERVER=<serv_id>,<mode>,[<port>],[<ssl>],[<maxconn>],[conn_timeout]`**
 
-_`srv_id`_  server id: 0 ~ 2 (up to 3 servers can be created)<br>
-_`mode`_ 1:  creates the server; 0: deletes the server
-_`port`  port number, 333 is the default
-_`ssl`_  1: use SSL; 0: do not use SSL (default)
-_`max_con`_  maximal number of the remote connection that can be accepted (0 ~ 4); default: 4
-_`timeout`_  remote connection timeout in seconds (1 ~ 7200); default: 120
+* _`srv_id`_  server id: 0 ~ 2 (up to 3 servers can be created)
+* _`mode`_ 1:  creates the server; 0: deletes the server
+* _`port`  port number, 333 is the default
+* _`ssl`_  1: use SSL; 0: do not use SSL (default)
+* _`max_con`_  maximal number of the remote connection that can be accepted (0 ~ 4); default: 4
+* _`timeout`_  remote connection timeout in seconds (1 ~ 7200); default: 120
 
 
 _**Query**_<br>
 
-AT+TCPSERVER?
+**`AT+TCPSERVER?`**
 
 Report the TCPServer status:<br>
 
@@ -211,17 +212,17 @@ Report the TCPServer status:<br>
 +TCPSERVER:srv_id,conn_num,max_con,port,ssl,timeout
 +TCPCLIENT:link_id,IP_addr,port
 ```
-_+TCPSERVER:srv_id,..._ section is reported only if there are some opened servers <br>
-_+TCPCLIENT:_ section is reported only if there are some connected clients<br>
+> _+TCPSERVER:srv_id,..._ section is reported only if there are some opened servers <br>
+> _+TCPCLIENT:_ section is reported only if there are some connected clients<br>
 
 
 ## AT+TCPSTATUS
 
-**AT+TCPSTATUS** or **AT+TCPSTATUS?**
+**`AT+TCPSTATUS`** or **`AT+TCPSTATUS?`**
 
 Reports the status in the same format as the _AT+CIPSTATUS_.<br>
 
-**AT+TCPSTATUS=link_id**
+**`AT+TCPSTATUS=link_id`**
 
 Reports the status for the single connection in the following format:<br>
 

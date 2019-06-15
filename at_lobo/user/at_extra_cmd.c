@@ -601,7 +601,7 @@ exit_err:
 static void ICACHE_FLASH_ATTR tcpserver_client_connect_cb(void *arg)
 {
     struct espconn *conn = (struct espconn *)arg;
-    uint8_t tcp_n;
+    uint8_t tcp_n, res;
     char info[48] = {'\0'};
     char ip_addr[16] = {'\0'};
     uint8_t srv_n = TCPCONN_MAX_SERV;
@@ -631,6 +631,11 @@ static void ICACHE_FLASH_ATTR tcpserver_client_connect_cb(void *arg)
     tcpconn->ssl = tcpservers[srv_n]->ssl;
     tcpconn->parrent = conn->parrent;
     tcpconn->conn = conn;
+
+    res = espconn_regist_time(tcpconn->conn, (uint32_t)tcpservers[srv_n]->timeout, 1);
+    if (res != ESPCONN_OK) {
+        at_port_print_irom_str("\r\nTCPClientRegTimeERROR\r\n");
+    }
 
     tcpconns[tcp_n] = tcpconn;
 
@@ -669,6 +674,7 @@ void ICACHE_FLASH_ATTR at_setupCmdTCPServer(uint8_t id, char *pPara)
     uint8_t tcp_n;
     uint8_t cli_srv_n;
     err_t result;
+    uint8_t res;
 
     pPara++; // skip '='
 
@@ -758,9 +764,11 @@ void ICACHE_FLASH_ATTR at_setupCmdTCPServer(uint8_t id, char *pPara)
         // Accept connections
         if (ssl) espconn_secure_accept(tcpservers[srv_n]->conn);
         else {
-            espconn_accept(tcpservers[srv_n]->conn);
-            espconn_regist_time(tcpservers[srv_n]->conn, tmo, 1);
-
+            res = espconn_accept(tcpservers[srv_n]->conn);
+            if (res != ESPCONN_OK) {
+                at_port_print_irom_str("\r\nTCPServerAcceptERROR\r\n");
+                goto exit_err;
+            }
         }
     }
     else if (enable == 0) {
