@@ -127,11 +127,23 @@ The firmware files are created in `bin/upgrade` directory
 The initial firmware must be flashed to the ESP8266.<br>
 Bash script `flash.sh` is provided to make the flashing as easy as possible.<br>
 The correct `flash.sh` options must be specified, depending on the Flash type used:<br>
-Change the working directory to `at_lobo` and run `flash.sh`:<br>
+Change the working directory to **`at_lobo`** and run **`flash.sh`** script<br>
+<br>
+
+> The default serial port used is `/dev/ttyUSB0`<br>
+> If your board is attached to some other port, add the option **`-P <port>`**, where `<port` is serial port to which the bord is attached.<br>
+
+<br>
+
+> If your ESP8266/ESP8285 board cannot be reset by USB->UART adapter (for example MAIX M1W)<br>
+> it is recommended to erese the chip first with `.\flash.sh -eo`,<br>
+> then re-power it and execute one of the following commands with added **`-ne`** option<br>
+
+<br>
 
 Flash to ESP8285, 1MB, 512+512 map, in dout mode:
 ```
-.\flash.sh -t 1MB -m DOUT
+.\flash.sh -t 1MB -m dout
 ```
 Flash to ESP8266, 1MB, 512+512 map, in qio mode:
 ```
