@@ -169,3 +169,37 @@ Flash to ESP8266, 512KB, single firmware, no OTA:
 ```
 .\flash.sh -t 512KB
 ```
+
+## NOTE: Python 2/3 problem fix
+
+Recent updates of various Linux distros, e.g. Ubuntu 20.04, have Python 3 as their default Python version. That's what is invoked with the ```python``` command, and in this case will cause the building scripts to fail. 
+
+A simply workaround is to create a virtual environment with Python 2.
+
+To do so: 
+
+* install virtualenv if necessary with ```pip install virtualenv```
+* find where your python2 is: ```which python2```, a possible outcome is ```/usr/bin/python2```.
+* create a virtual environment with ```virtualenv -p /usr/bin/python2 venv```
+* activate it with ```source venv/bin/activate```
+
+Now if you just type python you'll see that it's 2.7.x and not 3.x.x, and ./build.sh will work.
+
+To leave the virtual environment simply type ```deactivate```.
+
+## NOTE: Flashing issues fix
+
+Sometimes the module times out and the flashing doesn't work. A proven way to do it is as follows:
+
+* use the FTDI breakout board and the breadboard power supply module (MB102/HW-131 kind)
+* set the power supply to 5V (to power the ESP module)
+* set the FTDI to 3.3V (RX/TX signals must be 0-3.3V only)
+* connect GND of the FTDI and the GND of the ESP module to the GND rail (must be common ground)
+* connect CHPD pin of the ESP module to 5V
+* connect GPIO0 pin of the ESP module to 5V through 10k pull-up resistor
+
+* connect a jumper wire to ESP module RST pin, for easy resetting
+
+Now after the flash.sh is going and seems to be stuck on "Connecting....----...." reset the board by quickly attaching the loose RST wire to GND rail.
+This might have to be done twice, first when the flash is erased and then when it's written to.
+
